@@ -21,7 +21,7 @@
     let model;
 
     async function cargarModelo() {
-      model = await tf.loadLayersModel('model.json'); // Asegúrate de que esta ruta sea correcta
+      model = await tf.loadLayersModel('/model.json'); // Asegúrate de que esta ruta sea correcta
       console.log("Modelo cargado");
     }
 
@@ -56,6 +56,7 @@
   </script>
 </body>
 </html>
+
 
 
 
