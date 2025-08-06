@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Predicción de Cáncer</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0/dist/tf.min.js"></script>
+</head>
+<body>
+  <h2>Predicción de cáncer de mama</h2>
+
+  <label>Mean Radius: <input type="number" id="radius" step="0.01"></label><br><br>
+  <label>Mean Texture: <input type="number" id="texture" step="0.01"></label><br><br>
+  <label>Mean Perimeter: <input type="number" id="perimeter" step="0.01"></label><br><br>
+  <label>Mean Area: <input type="number" id="area" step="0.01"></label><br><br>
+
+  <button onclick="predecir()">Predecir</button>
+
+  <h3 id="resultado"></h3>
+
+  <script>
+    let model;
+
+    async function cargarModelo() {
+      model = await tf.loadLayersModel('C:\Users\USUARIO\Desktop\modelo_reg_logis\modelo_tfjs\model.json'); // Asegúrate de que esta ruta sea correcta
+      console.log("Modelo cargado");
+    }
+
+    async function predecir() {
+      if (!model) {
+        alert("El modelo aún no ha sido cargado.");
+        return;
+      }
+
+      // Obtener los valores de entrada
+      const radius = parseFloat(document.getElementById("radius").value);
+      const texture = parseFloat(document.getElementById("texture").value);
+      const perimeter = parseFloat(document.getElementById("perimeter").value);
+      const area = parseFloat(document.getElementById("area").value);
+
+      if ([radius, texture, perimeter, area].some(isNaN)) {
+        alert("Por favor, complete todos los campos con valores válidos.");
+        return;
+      }
+
+      // Escalar datos (estos valores se deben ajustar según tus datos reales)
+      const inputTensor = tf.tensor2d([[radius, texture, perimeter, area]]);
+
+      const prediccion = model.predict(inputTensor);
+      const resultado = await prediccion.data();
+
+      document.getElementById("resultado").innerText =
+        resultado[0] > 0.5 ? "Tiene cáncer (1)" : "No tiene cáncer (0)";
+    }
+
+    cargarModelo();
+  </script>
+</body>
+</html>
+
